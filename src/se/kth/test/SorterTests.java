@@ -13,13 +13,14 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import se.kth.sortNonParallel.MergeSorter;
 import se.kth.sortNonParallel.QuickSorter;
 
 
 public class SorterTests {
 
 	public static final int SIZE = 1000000;
-	public static final int MAX = 100000;
+	public static final int MAX = 1000;
 	public static final int TESTRUNS = 10;
 	
 	private float[] mArray;
@@ -89,6 +90,34 @@ public class SorterTests {
 		
 		System.out.println("Arrays sort time: " + ((totalTime)*1E-6)/TESTRUNS + " mSec");
 	
+	}
+	
+	@Test
+	public void testMergeSort() {
+		long startTime, stopTime, totalTime = 0;
+		
+		setUp();
+		MergeSorter ms = new MergeSorter();
+		
+		// Warm-up
+		for(int i=0; i<3; i++) {
+			setUp();
+			ms.sort(mArray);
+		}
+		
+		for(int i=0; i<TESTRUNS; i++) {
+			setUp();
+			// Force garbage collection
+			System.gc();
+			startTime = System.nanoTime();
+			ms.sort(mArray);
+			stopTime = System.nanoTime();
+			totalTime+=(stopTime-startTime);
+		}
+		
+		assertTrue(validate());
+		
+		System.out.println("Mergesort time: " + ((totalTime)*1E-6)/TESTRUNS + " mSec");
 	}
 	
 	private boolean validate() {
