@@ -1,7 +1,7 @@
 /**
  * Tests quicksort, mergesort and Arrays.sort
  * 
- * @author	Helena Lindén & johan Stråle
+ * @author	Helena Lind��n & johan Str��le
  * @since	2014-02-24
  */
 package se.kth.test;
@@ -17,11 +17,11 @@ import se.kth.sortNonParallel.MergeSorter;
 import se.kth.sortNonParallel.QuickSorter;
 
 
-public class SorterTests {
+public class NPSorterTests {
 
-	public static final int SIZE = 1000000;
-	public static final int MAX = 1000;
-	public static final int TESTRUNS = 10;
+	public static final int SIZE = PSorterTests.SIZE;
+	public static final int MAX = PSorterTests.MAX;
+	public static final int TESTRUNS = PSorterTests.TESTRUNS;
 	
 	private float[] mArray;
 	private int mLength;
