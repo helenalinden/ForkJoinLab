@@ -9,17 +9,20 @@
 package se.kth.sortParallel;
 
 import java.util.Arrays;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
-import se.kth.test.PSorterTests;
-
-public class QuickSorterTask extends RecursiveAction {
+public class QuickSorterTask extends RecursiveAction implements Sorter{
 
 	private static final long serialVersionUID = 1L;
-	private static final int THRESHOLD = PSorterTests.THRESHOLD_QUICK;
+	private int mThreshold;
 	private float[] mArray;
 	private int mLength;
 	private int mStart, mStop;
+	
+	public QuickSorterTask(int threshold) {
+		mThreshold = threshold;
+	}
 
 	public QuickSorterTask(float[] array, int start, int stop) {
 		mArray = array;
@@ -31,7 +34,7 @@ public class QuickSorterTask extends RecursiveAction {
 	@Override
 	protected void compute() {
 		
-		if(mLength < THRESHOLD) {
+		if(mLength < mThreshold) {
 			computeDirectly();
 		} else {
 			
@@ -70,5 +73,35 @@ public class QuickSorterTask extends RecursiveAction {
 	
 	private void computeDirectly() {
 		Arrays.sort(mArray, mStart, mStop+1);
+	}
+
+	@Override
+	public long sort(ForkJoinPool pool) {
+		
+		long startTime = System.nanoTime();
+		pool.invoke(this);
+		return System.nanoTime() - startTime;
+	}
+
+	@Override
+	public void setArray(float[] array) {
+		mArray = array;
+		mLength = mArray.length - 1;
+		mStart = 0;
+		mStop = mLength;
+	}
+	
+	public void setThreshold(int threshold) {
+		mThreshold = threshold;
+	}
+
+	@Override
+	public float[] getArray() {
+		return mArray;
+	}
+
+	@Override
+	public Sorter copy() {
+		return new QuickSorterTask(mThreshold);
 	}
 }

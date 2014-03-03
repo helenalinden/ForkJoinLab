@@ -19,7 +19,7 @@ import se.kth.sortParallel.QuickSorterTask;
 
 public class PSorterTests {
 
-	public static final int SIZE = (int) 1E8;
+	public static final int SIZE = (int) 1E7;
 	public static final int MAX = (int) 1E4;
 	public static final int TESTRUNS = 5;
 	public static final int WARMUP = 3;
@@ -53,14 +53,17 @@ public class PSorterTests {
 		// Warm-up
 		for(int i=0; i<WARMUP; i++) {
 			setUp();
-			QuickSorterTask qsTask = new QuickSorterTask(mArray, 0, mLength-1); 
+			System.gc();
+			QuickSorterTask qsTask = new QuickSorterTask(mArray, 0, mLength-1);
+			qsTask.setThreshold(THRESHOLD_QUICK);
 			pool.invoke(qsTask);
 		}
 		
 		for(int i=0; i<TESTRUNS; i++) {
 			setUp();
 			// Force garbage collection
-			QuickSorterTask qsTask = new QuickSorterTask(mArray, 0, mLength-1); 
+			QuickSorterTask qsTask = new QuickSorterTask(mArray, 0, mLength-1);
+			qsTask.setThreshold(THRESHOLD_QUICK);
 			System.gc();
 			startTime = System.nanoTime();
 			pool.invoke(qsTask);
@@ -84,14 +87,17 @@ public class PSorterTests {
 		// Warm-up
 		for(int i=0; i<WARMUP; i++) {
 			setUp();
+			System.gc();
 			MergeSorterTask msTask = new MergeSorterTask(mArray, 0, mLength-1); 
+			msTask.setThreshold(THRESHOLD_MERGE);
 			pool.invoke(msTask);
 		}
 		
 		for(int i=0; i<TESTRUNS; i++) {
 			setUp();
 			// Force garbage collection
-			MergeSorterTask msTask = new MergeSorterTask(mArray, 0, mLength-1); 
+			MergeSorterTask msTask = new MergeSorterTask(mArray, 0, mLength-1);
+			msTask.setThreshold(THRESHOLD_MERGE);
 			System.gc();
 			startTime = System.nanoTime();
 			pool.invoke(msTask);
